@@ -27,15 +27,14 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     let user = this.repo.create(createUserDto);
-    // const profile = await this.profileService.create(user);
-    console.log(createUserDto);
-    // user = {
-    //   ...user,
-    //   ...createUserDto,
-    //   profile
-    // }
-    // console.log(user);
-    return null;
+    const profile = await this.profileService.create(user);
+
+    user = {
+      ...user,
+      ...createUserDto,
+      profile
+    }
+    console.log(user);
 
     return await this.repo.save(user);
   }

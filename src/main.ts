@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 import { setupSwagger } from './setup-swagger';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
+import * as express from 'express';
 
 async function bootstrap(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -13,6 +14,8 @@ async function bootstrap(): Promise<NestExpressApplication> {
     new ExpressAdapter(),
     { cors: true, bodyParser: false },
   );
+
+  app.use(express.json());
   
   const configService = app.select(SharedModule).get(ApiConfigService);
   const PORT = configService.config.port || 8080;
