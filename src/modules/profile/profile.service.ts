@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './entities/profile.entity';
 import { Repository } from 'typeorm';
-import { ProfileDto } from './dto/profile.dto';
+import { RoleType } from '../../constants/role-type.enum';
+import { TeacherService } from './teacher/teacher.service';
+import { StudentService } from './student/student.service';
+import { CreateProfileDto } from './dto/create-profile.dto';
 
 @Injectable()
 export class ProfileService {
@@ -12,6 +13,8 @@ export class ProfileService {
   constructor(
     @InjectRepository(Profile)
     private readonly repo: Repository<Profile>,
+    private readonly studentService: StudentService,
+    private readonly teacherService: TeacherService,
   ) {}
 
   async findOneBy(
@@ -24,22 +27,22 @@ export class ProfileService {
     });
   }
 
-  async create(createProfileDto: CreateProfileDto): Promise<Profile> {
-    return await this.repo.save(createProfileDto);
+  async create(createProfileDto: CreateProfileDto, role: RoleType): Promise<Profile> {
+    let profile;
+    if (role === RoleType.STUDENT) profile = await this.studentService.create(createProfileDto);
+    if (role === RoleType.TEACHER) profile = await this.teacherService.create(createProfileDto);
+    profile.role = role;
+
+    console.log(profile);
+    
+    return await this.repo.save(profile);
   }
 
-  async findAll(): Promise<ProfileDto[]> {
-    const profiles = await this.repo.find({ relations: ["user"] });
-    return profiles.map((profile) => new ProfileDto(profile));
+  async findAll() {
+    return null;
   }
 
-  async findOne(id: string): Promise<ProfileDto | null> {
-    const profile = await this.findOneBy({ id }, ["user"]);
-    if (profile) return new ProfileDto(profile);
-    else return null;
-  }
-
-  async update(id: string, updateProfileDto: UpdateProfileDto) {
+  async findOne(id: string) {
     return null;
   }
 

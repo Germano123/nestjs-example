@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfileService } from '../profile/profile.service';
+import { CreateStudentDto } from '../profile/student/dto/create-student.dto';
+import { RoleType } from 'src/constants/role-type.enum';
+import { CreateTeacherDto } from '../profile/teacher/dto/create-teacher.dto';
 
 @Injectable()
 export class UserService {
@@ -25,14 +27,40 @@ export class UserService {
     });
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async createStudent(createUserDto: CreateStudentDto) {
     let user = this.repo.create(createUserDto);
-    const profile = await this.profileService.create(user);
+    
+    user = {
+      ...user,
+      ...createUserDto,
+    }
+
+    await this.repo.save(user);
+
+    // create profile
+    const profile = await this.profileService.create(user, RoleType.STUDENT);
+    user.profile = profile;
+    await this.repo.save(user);
+
+    return;
+    user = {
+      ...user,
+      ...createUserDto,
+      // profile
+    }
+    console.log(user);
+
+    return ;
+  }
+
+  async createTeacher(createUserDto: CreateTeacherDto) {
+    let user = this.repo.create(createUserDto);
+    const profile = await this.profileService.create(user, RoleType.TEACHER);
 
     user = {
       ...user,
       ...createUserDto,
-      profile
+      // profile
     }
     console.log(user);
 
