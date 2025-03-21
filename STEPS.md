@@ -5,7 +5,8 @@
 
 2. Create modules
 3. Install TypeORM + Postgres
-4. Add OneToOne relation between entities
-5. Create entity, relations and migration
-6. Create service to fetch data
-7. Test on swagger
+4. Run a postgres server and configure .local.env file
+5. Add OneToOne relation between entities
+6. Create entity, relations and migration
+7. Create service to fetch data
+8. Test on swagger

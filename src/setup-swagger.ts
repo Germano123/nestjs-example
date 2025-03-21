@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication, port: number): void {
     const options = new DocumentBuilder()
-    .setTitle('ECreators! Backend API')
+    .setTitle('Backend API')
     .setDescription('Back end API.')
     .addBearerAuth()
     .build();
